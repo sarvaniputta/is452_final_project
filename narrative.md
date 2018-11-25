@@ -1,3 +1,13 @@
+Final Project
+=============
+
+Regular commuters using the Champaign Urbana Mass Transit District (MTD) buses rely on web and mobile apps to track bus arrivals at bus stops. These apps run based on the developer application programming interface (API) provided by MTD (developer.cumtd.com/). This programming project aims to produce a python-based wrapper for the API. The goal is to create functions in python that leverage the API and parse the json/xml results into native python data structures such as lists and dictionaries. Additionally, the fixed list of bus stops and scheduled times will be populated in a sqlite database for offline access. Some of the functions might be able to fall back on the sqlite database if there is no internet access.
+
+Github URL: https://github.com/sarvaniputta/is452_final_project
+
+Narrative:
+_________
+
 We registered at http://developer.cumtd.com/ and obtained an API Key from MTD website and used it as a key for the future API access.
 
 
