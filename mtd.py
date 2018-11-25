@@ -75,5 +75,4 @@ def get_stoptimes_bystop(stop_id, route_id=None, date=None):
             route_dict[route] = [time]
         else:
             route_dict[route].append(time)
-
     return route_dict
