@@ -28,7 +28,17 @@ def get_routes_by_stop(stop_id, offline=True):
     return routes
 
 
-def get_stop(stop_id):
+def get_stop(stop_id, offline=True):
+    if offline:
+        stop_dict = {}
+        stop_names = []
+        lat_long = []
+        for stop in conn.execute('''select stop_name, stop_lat, stop_lon from stops where stop_id like ?;''',
+                                 (stop_id.split(':')[0] + '%',)):
+            stop_names.append(stop[0])
+            lat_long.append((stop[1], stop[2]))
+        stop_dict = {'stop_names': stop_names, 'lat_long': lat_long}
+        return stop_dict
     url = 'https://developer.cumtd.com/api/v2.2/json/getstop?key=' + API_KEY + '&stop_id=' + str(stop_id)
     response = requests.get(url)
     d = response.json()
