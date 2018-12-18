@@ -91,7 +91,7 @@ def get_stop_times_by_trip(trip_id, offline=True):
     return stop_list
 
 
-def get_trip_from_route(route_id, offline=True):
+def get_trip_departures_by_route(route_id, offline=True):
     if offline:
         trip_names = []
         for trip in conn.execute('''select trips.route_id, trips.trip_headsign, trips.trip_id, stop_times.departure_time, stops.stop_name
