@@ -53,13 +53,19 @@ def get_stop(stop_id, offline=True):
     return stop_dict
 
 
-def get_trip(trip_id):
+def get_trip(trip_id, offline=True):
+    if offline:
+        trips = []
+        for trip in conn.execute('''select route_id, trip_headsign from trips where trip_id like ?;''',
+                                 (trip_id,)):
+            trips.append(trip)
+        return trips
     url = 'https://developer.cumtd.com/api/v2.2/json/gettrip?key=' + API_KEY + '&trip_id=' + str(trip_id)
     response = requests.get(url)
     text = response.json()
     trips = []
     for trip_dict in text['trips']:
-        trips.append(trip_dict['route_id'] + ' ' + trip_dict['direction'] + ' ' + trip_dict['trip_headsign'])
+        trips.append((trip_dict['route_id'], trip_dict['trip_headsign']))
     return trips
 
 
