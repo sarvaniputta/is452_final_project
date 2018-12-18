@@ -119,7 +119,7 @@ def get_trips_by_route(route_id):
     return routes
 
 
-def get_stoptimes_bystop(stop_id, route_id=None, date=None):
+def get_stoptimes_by_stop(stop_id, route_id=None, date=None):
     base_url = 'https://developer.cumtd.com/api/v2.2/json/getstoptimesbystop?key=' + API_KEY + '&stop_id=' + str(
         stop_id)
     if route_id is not None:
