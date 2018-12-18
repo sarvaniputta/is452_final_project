@@ -69,7 +69,19 @@ def get_trip(trip_id, offline=True):
     return trips
 
 
-def get_stop_times_by_trip(trip_id):
+def get_stop_times_by_trip(trip_id, offline=True):
+    if offline:
+        stop_list = []
+        for stop in conn.execute('''select arrival_time, departure_time, stop_name from trips JOIN stop_times 
+        JOIN stops 
+        on 
+        (trips.trip_id = stop_times.trip_id)
+        and
+        (stops.stop_id = stop_times.stop_id)
+        and 
+        ((trips.trip_id = ?));''', (trip_id,)):
+            stop_list.append(stop)
+        return stop_list
     url = 'https://developer.cumtd.com/api/v2.2/json/getstoptimesbytrip?key=' + API_KEY + '&trip_id=' + str(trip_id)
     response = requests.get(url)
     text = response.json()
