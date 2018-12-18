@@ -1,9 +1,24 @@
 API_KEY = '6c6b183c887046e89d81df9552de02b1'
 
+import sqlite3
+
 import requests
 
+conn = sqlite3.connect('./mtd.db')
 
-def get_routes_by_stop(stop_id):
+
+def get_routes_by_stop(stop_id, offline=True):
+    if offline:
+        routes = []
+        for result in conn.execute('''select DISTINCT (routes.route_short_name || " " || routes.route_id) from
+        routes JOIN trips JOIN stop_times ON 
+                                    (routes.route_id = trips.route_id)
+                                    AND
+                                    (trips.trip_id = stop_times.trip_id)
+                                    AND
+                                    (stop_times.stop_id = ?) ORDER BY routes.route_id;''', [stop_id]):
+            routes.append(result[0])
+        return routes
     url = 'https://developer.cumtd.com/api/v2.2/json/getroutesbystop?key=' + API_KEY + '&stop_id=' + str(stop_id)
     response = requests.get(url)
     text = response.json()
