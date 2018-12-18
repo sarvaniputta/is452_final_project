@@ -109,7 +109,16 @@ def get_trip_departures_by_route(route_id, offline=True):
             trip_names.append(trip)
         return trip_names
 
-def get_trips_by_route(route_id):
+
+def get_trips_by_route(route_id, offline=True):
+    if offline:
+        routes = []
+        for route in conn.execute(
+                '''select route_id, direction_id, trip_headsign from trips where lower(route_id)= ?;''',
+                (route_id.lower(),)):
+            routes.append(route)
+        return routes
+
     url = 'https://developer.cumtd.com/api/v2.2/json/gettripsbyroute?key=' + API_KEY + '&route_id=' + str(route_id)
     response = requests.get(url)
     text = response.json()
@@ -119,7 +128,29 @@ def get_trips_by_route(route_id):
     return routes
 
 
-def get_stoptimes_by_stop(stop_id, route_id=None, date=None):
+def get_stoptimes_by_stop(stop_id, route_id=None, date=None, offline=True):
+    if offline:
+
+        query = '''select trips.route_id, stop_times.arrival_time from stop_times
+        JOIN
+        trips
+        on
+        stop_times.trip_id = trips.trip_id and stop_id =? '''
+        tokens = [stop_id]
+        if route_id is not None:
+            query += '''and trips.route_id = ? '''
+            tokens = [stop_id, route_id]
+        #         conn.execute(query, tokens)
+        route_dict = {}
+        for stop in conn.execute(query, tokens):
+            time = stop[1]
+            route = stop[0]
+            if route not in route_dict:
+                route_dict[route] = [time]
+            else:
+                route_dict[route].append(time)
+        return route_dict
+
     base_url = 'https://developer.cumtd.com/api/v2.2/json/getstoptimesbystop?key=' + API_KEY + '&stop_id=' + str(
         stop_id)
     if route_id is not None:
