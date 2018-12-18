@@ -91,6 +91,24 @@ def get_stop_times_by_trip(trip_id, offline=True):
     return stop_list
 
 
+def get_trip_from_route(route_id, offline=True):
+    if offline:
+        trip_names = []
+        for trip in conn.execute('''select trips.route_id, trips.trip_headsign, trips.trip_id, stop_times.departure_time, stops.stop_name
+        from trips
+        JOIN
+        Stop_times
+        JOIN
+        Stops
+        ON trips.trip_id = stop_times.trip_id and
+        stop_times.stop_id = stops.stop_id 
+        and 
+        stop_times.stop_sequence = 0 
+        and
+        trips.route_id like ?;''', (route_id,)):
+            trip_names.append(trip)
+        return trip_names
+
 def get_trips_by_route(route_id):
     url = 'https://developer.cumtd.com/api/v2.2/json/gettripsbyroute?key=' + API_KEY + '&route_id=' + str(route_id)
     response = requests.get(url)
