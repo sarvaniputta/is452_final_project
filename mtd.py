@@ -118,7 +118,6 @@ def get_trips_by_route(route_id, offline=True):
                 (route_id.lower(),)):
             routes.append(route)
         return routes
-
     url = 'https://developer.cumtd.com/api/v2.2/json/gettripsbyroute?key=' + API_KEY + '&route_id=' + str(route_id)
     response = requests.get(url)
     text = response.json()
@@ -128,9 +127,9 @@ def get_trips_by_route(route_id, offline=True):
     return routes
 
 
+
 def get_stoptimes_by_stop(stop_id, route_id=None, date=None, offline=True):
     if offline:
-
         query = '''select trips.route_id, stop_times.arrival_time from stop_times
         JOIN
         trips
@@ -150,7 +149,6 @@ def get_stoptimes_by_stop(stop_id, route_id=None, date=None, offline=True):
             else:
                 route_dict[route].append(time)
         return route_dict
-
     base_url = 'https://developer.cumtd.com/api/v2.2/json/getstoptimesbystop?key=' + API_KEY + '&stop_id=' + str(
         stop_id)
     if route_id is not None:
